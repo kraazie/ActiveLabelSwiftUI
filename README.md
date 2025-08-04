@@ -50,9 +50,15 @@ struct ContentView: View {
         .padding()
     }
 }
+```
 
-let attributed = ActiveLabelHelper.makeAttributedString(
-    "Welcome @john to #iOSDev. Check https://github.com!",
+### Basic Example Precomputing Attributed String (for performance)
+
+```swift
+import ActiveLabelSwiftUI
+
+let attributed = ActiveLabelView.makeAttributedString(
+    "Welcome @Ali to #iOSDev. Check https://github.com!",
     font: .systemFont(ofSize: 16),
     textColor: .label,
     linkColor: .blue
