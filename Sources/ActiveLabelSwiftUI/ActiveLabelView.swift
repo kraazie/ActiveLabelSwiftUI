@@ -43,9 +43,10 @@ public struct ActiveLabelView: View {
     public static func makeAttributedString(from text: String) -> AttributedString {
         var result = AttributedString()
         let regex = try! NSRegularExpression(
-            pattern: "(#[a-zA-Z0-9_]+)|(@[a-zA-Z0-9_]+)|(https?://[a-zA-Z0-9./]+)",
+            pattern: "(#[a-zA-Z0-9_]+)|(@[a-zA-Z0-9_]+)|(https?://[a-zA-Z0-9./]+)|(\\$[0-9]+(?:\\.[0-9]{1,2})?)|(\\$[a-zA-Z_]+)",
             options: []
         )
+        
         let nsText = text as NSString
         let matches = regex.matches(in: text, range: NSRange(location: 0, length: nsText.length))
         var currentIndex = 0
@@ -66,10 +67,13 @@ public struct ActiveLabelView: View {
             } else if matched.hasPrefix("#") {
                 attrText.foregroundColor = .green
                 attrText.link = URL(string: "hashtag://\(matched.dropFirst())")
-            } else if let url = URL(string: matched) {
+            } else if matched.starts(with: "http") {
                 attrText.foregroundColor = .purple
                 attrText.underlineStyle = .single
-                attrText.link = url
+                attrText.link = URL(string: matched)
+            } else if matched.starts(with: "$") {
+                attrText.foregroundColor = .orange
+                attrText.link = URL(string: "dollar://\(matched.dropFirst())")
             }
 
             result += attrText
@@ -82,4 +86,5 @@ public struct ActiveLabelView: View {
 
         return result
     }
+
 }
